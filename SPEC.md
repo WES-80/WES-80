@@ -10,12 +10,33 @@
 - Keyboard input
 - WAST text editor UI
 
+# Runtime (core)
+ 
+TODO(Christian)
+
+# Runtime Frontend
+
+TODO(Ben)
+
+# Editor Frontend
+
+TODO(Jordan)
+
 # Module interface
-- Author and title somewhere in the file
-## Exports
-### Functions
- - Init function
- - Render frame function
-### Structs
- - Inputs
- - PixelBuffer
+
+```
+// Metadata TODO(Ben)
+
+Exports:
+    init(): void;
+
+    frame(): void; // Should be called 30 times per second (best effort)
+
+    SCREEN: {
+        // TODO(Josh)
+    }
+
+    CONTROLLER: {
+        // TODO(Josh)
+    }
+```
