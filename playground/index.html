@@ -4,10 +4,28 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
+    <title>WES-80 Playground</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div class="main-split">
+      <div style="grid-area: editor;" class="flex-column">
+        <div class="bg-primary text-primary-contrast pad-1 flex h-stack-1">
+          <div class="flex-1">
+            Editor
+          </div>
+          <div id="size-status">81920 bytes</div>
+          <button id="build-and-run">Build and run</button>
+        </div>
+        <div id="editor" class="flex-1">
+        </div>
+      </div>
+      <div style="grid-area: console;" class="flex-column">
+        <div class="bg-primary text-primary-contrast pad-1">WES-80 Console</div>
+        <div class="flex-1">
+          <div id="console-container"></div>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
