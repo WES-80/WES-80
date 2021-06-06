@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="module">
+      async function init() {
+        const { instance } = await WebAssembly.instantiateStreaming(
+          fetch("./cartridge.wasm")
+        );
+
+        const colors = [
+          // 8 normal colors
+          [0x00, 0x00, 0x00, 0xff], // 00 black
+          [0xdf, 0x8c, 0x8c, 0xff], // 01 red
+          [0xa8, 0xce, 0x93, 0xff], // 02 green
+          [0xda, 0xda, 0x93, 0xff], // 03 yellow
+          [0x00, 0x00, 0xff, 0xff], // 04 blue
+          [0x9a, 0x93, 0x9e, 0xff], // 05 magenta
+          [0x7f, 0xc1, 0xca, 0xff], // 06 cyan
+          [0xff, 0xff, 0xff, 0xff], // 07 white
+          // 8 bright colors
+          [0x00, 0x00, 0x00, 0xff], // 08 black
+          [0xdf, 0x8c, 0x8c, 0xff], // 09 red
+          [0xa8, 0xce, 0x93, 0xff], // 10 green
+          [0xda, 0xda, 0x93, 0xff], // 11 yellow
+          [0x83, 0xaf, 0xe5, 0xff], // 12 blue
+          [0x9a, 0x93, 0xe1, 0xff], // 13 magenta
+          [0x7f, 0xc1, 0xca, 0xff], // 14 cyan
+          [0xff, 0xff, 0xff, 0xff], // 15 white
+        ]
+
+        const width = 240;
+        const height = 160;
+
+        const canvas = document.getElementById("screen-canvas");
+        canvas.width = width;
+        canvas.height = height;
+
+        const screenData = new Uint8ClampedArray(
+          instance.exports.memory.buffer,
+          instance.exports.SCREEN.value,  // screen address
+          width * height / 2, // each u8 encodes 2 pixels
+        );
+
+        // Populate SCREEN buffer, and subsequently set screenData.
+        instance.exports.tick();
+
+        // Bit manipulation to map the screen data to a buffer in the format
+        // that ImageData expects. WASM is little endian which makes this way
+        // more fiddley.
+        const arr = new Uint8ClampedArray(width * height * 4);
+        for (let i = 0, j = 0; i < screenData.length; i += 4, j += 32) {
+          arr[j]    = colors[(screenData[i+3] & 0xf0) >> 4][0]
+          arr[j+1]  = colors[(screenData[i+3] & 0xf0) >> 4][1]
+          arr[j+2]  = colors[(screenData[i+3] & 0xf0) >> 4][2]
+          arr[j+3]  = colors[(screenData[i+3] & 0xf0) >> 4][3]
+
+          arr[j+4]  = colors[(screenData[i+3] & 0x0f)][0]
+          arr[j+5]  = colors[(screenData[i+3] & 0x0f)][1]
+          arr[j+6]  = colors[(screenData[i+3] & 0x0f)][2]
+          arr[j+7]  = colors[(screenData[i+3] & 0x0f)][3]
+
+          arr[j+8]  = colors[(screenData[i+2] & 0xf0) >> 4][0]
+          arr[j+9]  = colors[(screenData[i+2] & 0xf0) >> 4][1]
+          arr[j+10] = colors[(screenData[i+2] & 0xf0) >> 4][2]
+          arr[j+11] = colors[(screenData[i+2] & 0xf0) >> 4][3]
+
+          arr[j+12] = colors[(screenData[i+2] & 0x0f)][0]
+          arr[j+13] = colors[(screenData[i+2] & 0x0f)][1]
+          arr[j+14] = colors[(screenData[i+2] & 0x0f)][2]
+          arr[j+15] = colors[(screenData[i+2] & 0x0f)][3]
+
+          arr[j+16] = colors[(screenData[i+1] & 0xf0) >> 4][0]
+          arr[j+17] = colors[(screenData[i+1] & 0xf0) >> 4][1]
+          arr[j+18] = colors[(screenData[i+1] & 0xf0) >> 4][2]
+          arr[j+19] = colors[(screenData[i+1] & 0xf0) >> 4][3]
+
+          arr[j+20] = colors[(screenData[i+1] & 0x0f)][0]
+          arr[j+21] = colors[(screenData[i+1] & 0x0f)][1]
+          arr[j+22] = colors[(screenData[i+1] & 0x0f)][2]
+          arr[j+23] = colors[(screenData[i+1] & 0x0f)][3]
+
+          arr[j+24] = colors[(screenData[i]   & 0xf0) >> 4][0]
+          arr[j+25] = colors[(screenData[i]   & 0xf0) >> 4][1]
+          arr[j+26] = colors[(screenData[i]   & 0xf0) >> 4][2]
+          arr[j+27] = colors[(screenData[i]   & 0xf0) >> 4][3]
+
+          arr[j+28] = colors[(screenData[i]   & 0x0f)][0]
+          arr[j+29] = colors[(screenData[i]   & 0x0f)][1]
+          arr[j+30] = colors[(screenData[i]   & 0x0f)][2]
+          arr[j+31] = colors[(screenData[i]   & 0x0f)][3]
+        }
+
+        const ctx = canvas.getContext("2d");
+        const imageData = new ImageData(arr, width);
+        ctx.putImageData(imageData, 0, 0);
+      }
+
+      init();
+    </script>
+  </head>
+  <body>
+    <canvas
+      id="screen-canvas"
+      style="border:1px solid black"
+    ></canvas>
+  </body>
+</html>
