@@ -1,5 +1,5 @@
 import './style.css'
-import {editor, languages} from 'monaco-editor';
+import {editor} from 'monaco-editor';
 import wabt from 'wabt';
 
 const editorDiv = document.querySelector<HTMLDivElement>('#editor');
