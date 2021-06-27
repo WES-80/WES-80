@@ -48,6 +48,7 @@ function addCompletionItems() {
           insertTextRules:
             languages.CompletionItemInsertTextRule.InsertAsSnippet,
         },
+        // @ts-ignore
         {
           label: "export",
           kind: languages.CompletionItemKind.Snippet,

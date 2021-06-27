@@ -7,8 +7,8 @@
     <title>WES-80 Playground</title>
   </head>
   <body>
-    <div class="main-split">
-      <div style="grid-area: editor;" class="flex-column">
+    <div class="main-split position-relative">
+      <div style="grid-area: editor;" class="flex-column position-relative">
         <div class="bg-primary text-primary-contrast pad-1 flex h-stack-1">
           <div class="flex-1">
             Editor
@@ -23,6 +23,11 @@
         <div class="bg-primary text-primary-contrast pad-1">WES-80 Console</div>
         <div class="flex-1 pad-1">
           <div id="console-container"></div>
+        </div>
+      </div>
+      <div id="editor-file-drop-target" class="display-none position-absolute-fill bg-neutral-80 pad-1 flex flex-center flex-align-stretch">
+        <div class="border-dashed-8 border-round-large flex flex-1 flex-center text-h1">
+          Drop cartridge to edit
         </div>
       </div>
     </div>

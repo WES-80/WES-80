@@ -59,8 +59,15 @@ li {
   display: flex;
   flex-direction: column;
 }
+.display-none {
+  display: none;
+}
 .flex-1 {
   flex: 1;
+}
+.flex-center {
+  justify-content: center;
+  align-items: center;
 }
 
 .bg-primary {
@@ -68,6 +75,42 @@ li {
 }
 .text-primary-contrast {
   color: white;
+}
+.text-h1 {
+  font-size: 2.5rem;
+}
+
+.bg-neutral-80 {
+  background-color: rgba(210, 210, 210, 0.8);
+}
+
+.border-round-large {
+  border-radius: 24px;
+}
+
+.border-dashed-8 {
+  border: 8px dashed #aaa;
+}
+
+.position-relative {
+  position: relative;
+}
+
+.position-absolute-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.flex-align-stretch {
+  align-items: stretch;
+}
+
+.size-fill {
+  width: 100%;
+  height: 100%;
 }
 
 /**
