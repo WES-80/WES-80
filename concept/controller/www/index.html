@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="module">
+      const keys = {
+        'KeyW':        { index: 5,  ident: "Player2::Up", count: 0},
+        'KeyS':        { index: 4,  ident: "Player2::Down", count: 0},
+        'KeyA':        { index: 3,  ident: "Player2::Left", count: 0},
+        'KeyD':        { index: 2,  ident: "Player2::Right", count: 0},
+        'KeyV':        { index: 1,  ident: "Player2::A", count: 0},
+        'KeyB':        { index: 0,  ident: "Player2::B", count: 0},
+
+        'KeyM':        { index: 15, ident: "Start", count: 0},
+        'KeyN':        { index: 14, ident: "Select", count: 0},
+
+        'ArrowUp':     { index: 13, ident: "Player1::Up", count: 0},
+        'ArrowDown':   { index: 12, ident: "Player1::Down", count: 0},
+        'ArrowLeft':   { index: 11, ident: "Player1::Left", count: 0},
+        'ArrowRight':  { index: 10, ident: "Player1::Right", count: 0},
+        'KeyI':        { index: 9,  ident: "Player1::A", count: 0},
+        'KeyO':        { index: 8,  ident: "Player1::B", count: 0},
+      }
+
+      const state = {};
+
+      async function init() {
+        const { instance } = await WebAssembly.instantiateStreaming(
+          fetch("./cartridge.wasm")
+        );
+
+        const controllerData = new Uint8ClampedArray(
+          instance.exports.memory.buffer,
+          instance.exports.CONTROLLER.value,  // controller address
+          2  // 16 bits of controller data
+        );
+
+        window.addEventListener('keydown', (ev) => {
+          if (keys[ev.code] == undefined) { return; }
+          keys[ev.code].count++;
+        });
+
+        window.addEventListener('keyup', (ev) => {
+          if (keys[ev.code] == undefined) { return; }
+          keys[ev.code].count = 0;
+        });
+
+        window.setInterval(() => {
+          for (const key in keys) {
+            const val = keys[key];
+
+            const offset = val.index;
+            const bitIndex = offset < 8 ? 1 : 0;
+
+            // Key is pressed for the first time, so set bit to ON.
+            if (val.count == 1) {
+              const mask = 1 << (offset % 8);
+              controllerData[bitIndex] |= mask;
+              val.count++;
+            }
+
+            // Key is released so set bit to OFF.
+            if (val.count == 0) {
+              const mask = (1 << (offset % 8) ^ 0xff);
+              controllerData[bitIndex] &= mask;
+            }
+          }
+
+          printControllerData(controllerData);
+          instance.exports.tick();
+        }, 1000 / 30);
+      }
+
+      function printControllerData(buf) {
+        let active = [];
+        for (const key in keys) {
+          const val = keys[key];
+
+          const bitIndex = val.index < 8 ? 1 : 0;
+          const mask = 1 << (val.index % 8);
+
+          if ((buf[bitIndex] & mask) > 0) {
+            active.push(val.ident);
+          }
+        }
+
+        if (active.length > 0) {
+          console.log(active);
+        }
+      }
+
+      init();
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
