@@ -1,7 +1,16 @@
+/*****************
+  Defaults
+ ****************/
+
+:root {
+  --grid-baseline: 8px;
+}
+
 html {
   height: 100%;
     overflow: hidden;
 }
+
 body {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -20,12 +29,12 @@ body {
 }
 
 li {
-  margin-left: 24px;
+  margin-left: calc(var(--grid-baseline) * 3);
 }
 
-/**
+/*****************
   Layout
- */
+ ****************/
 
 .main-split {
   display: grid;
@@ -35,12 +44,12 @@ li {
   grid-template-areas: 'editor console';
 }
 
-/**
+/*****************
   Utilities
- */
+ ****************/
 
 .pad-1 {
-  padding: 8px;
+  padding: var(--grid-baseline);
 }
 
 .flex {
@@ -65,5 +74,5 @@ li {
   Horizontal stack, adds margin between children
  */
 .h-stack-1 > :not(:last-child) {
-  margin-right: 8px;
+  margin-right: var(--grid-baseline);
 }

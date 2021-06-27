@@ -1,6 +1,7 @@
 import './style.css'
 import {editor} from 'monaco-editor';
 import wabt from 'wabt';
+import {registerWat} from "./editor-extensions";
 
 const editorDiv = document.querySelector<HTMLDivElement>('#editor');
 const consoleContainer = document.querySelector<HTMLDivElement>('#console-container');
@@ -21,6 +22,8 @@ const start = () => {
     if (editorDiv == null) {
         throw new Error('#editor element not found');
     }
+    
+    registerWat()
     
     codeEditor = editor.create(editorDiv, {
         value: defaultModule,
