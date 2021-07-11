@@ -1,0 +1,16 @@
+body {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+
+.container {
+  width: 100%;
+  display: flex;
+}
+
+.dropZone {
+  height: 80vh;
+  padding: 8px 16px;
+  background-color: lightgray;
+}
